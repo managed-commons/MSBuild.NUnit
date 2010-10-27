@@ -49,115 +49,60 @@ namespace MSBuild.Tasks
     /// </example>
     public class NUnit : ToolTask
     {
-        #region Constants
-
-        /// <summary>
-        /// The default relative path of the NUnit installation.
-        /// The value is <c>@"NUnit 2.4\bin"</c>.
-        /// </summary>
-        public const string DEFAULT_NUNIT_DIRECTORY = @"NUnit 2.4\bin";
-        private const string InstallDirKey = @"HKEY_CURRENT_USER\Software\nunit.org\Nunit\2.4";
-
-        #endregion Constants
-
-        #region Constructor
         /// <summary>
         /// Initializes a new instance of the <see cref="T:NUnit"/> class.
         /// </summary>
-        public NUnit()
-        {
-
+        public NUnit() {
+            TestInNewThread = true;
         }
-
-        #endregion Constructor
-
-        #region Properties
-        private ITaskItem[] _assemblies;
 
         /// <summary>
         /// Gets or sets the assemblies.
         /// </summary>
         /// <value>The assemblies.</value>
         [Required]
-        public ITaskItem[] Assemblies
-        {
-            get { return _assemblies; }
-            set { _assemblies = value; }
-        }
-
-        private string _includeCategory;
+        public ITaskItem[] Assemblies { get; set; }
 
         /// <summary>
         /// Gets or sets the categories to include.
         /// </summary>
         /// <remarks>Multiple values must be separated by a comma ","</remarks>
-        public string IncludeCategory
-        {
-            get { return _includeCategory; }
-            set { _includeCategory = value; }
-        }
-
-        private string _excludeCategory;
+        public string IncludeCategory { get; set; }
 
         /// <summary>
         /// Gets or sets the categories to exclude.
         /// </summary>
         /// <remarks>Multiple values must be separated by a comma ","</remarks>
-        public string ExcludeCategory
-        {
-            get { return _excludeCategory; }
-            set { _excludeCategory = value; }
-        }
-
-        private string _fixture;
+        public string ExcludeCategory { get; set; }
 
         /// <summary>
         /// Gets or sets the fixture.
         /// </summary>
         /// <value>The fixture.</value>
-        public string Fixture
-        {
-            get { return _fixture; }
-            set { _fixture = value; }
-        }
+        public string Fixture { get; set; }
 
-        private string _xsltTransformFile;
+        /// <summary>
+        /// Gets or sets the framework version to use.
+        /// </summary>
+        /// <value>The framework version. Ex: net-2.0</value>
+        public string FrameworkToUse { get; set; }
 
         /// <summary>
         /// Gets or sets the XSLT transform file.
         /// </summary>
         /// <value>The XSLT transform file.</value>
-        public string XsltTransformFile
-        {
-            get { return _xsltTransformFile; }
-            set { _xsltTransformFile = value; }
-        }
-
-        private string _outputXmlFile;
+        public string XsltTransformFile { get; set; }
 
         /// <summary>
         /// Gets or sets the output XML file.
         /// </summary>
         /// <value>The output XML file.</value>
-        public string OutputXmlFile
-        {
-            get { return _outputXmlFile; }
-            set { _outputXmlFile = value; }
-        }
-
-        private string _errorOutputFile;
+        public string OutputXmlFile { get; set; }
 
         /// <summary>
         /// The file to receive test error details.
         /// </summary>
-        public string ErrorOutputFile
-        {
-            get { return _errorOutputFile; }
-            set { _errorOutputFile = value; }
-        }
-
-
-        private string _workingDirectory;
+        public string ErrorOutputFile { get; set; }
 
         /// <summary>
         /// Gets or sets the working directory.
@@ -166,65 +111,33 @@ namespace MSBuild.Tasks
         /// <returns>
         /// The directory in which to run the executable file, or a null reference (Nothing in Visual Basic) if the executable file should be run in the current directory.
         /// </returns>
-        public string WorkingDirectory
-        {
-            get { return _workingDirectory; }
-            set { _workingDirectory = value; }
-        }
-
-        private bool _disableShadowCopy;
+        public string WorkingDirectory { get; set; }
 
         /// <summary>
         /// Determines whether assemblies are copied to a shadow folder during testing.
         /// </summary>
         /// <remarks>Shadow copying is enabled by default. If you want to test the assemblies "in place",
         /// you must set this property to <c>True</c>.</remarks>
-        public bool DisableShadowCopy
-        {
-            get { return _disableShadowCopy; }
-            set { _disableShadowCopy = value; }
-        }
-
-
-        private string _projectConfiguration;
+        public bool DisableShadowCopy { get; set; }
 
         /// <summary>
         /// The project configuration to run.
         /// </summary>
         /// <remarks>Only applies when a project file is used. The default is the first configuration, usually Debug.</remarks>
-        public string ProjectConfiguration
-        {
-            get { return _projectConfiguration; }
-            set { _projectConfiguration = value; }
-        }
-
-        // make this nullable so we have a thrid state, not set
-        private bool? _testInNewThread = null;
+        public string ProjectConfiguration { get; set; }
 
         /// <summary>
         /// Allows tests to be run in a new thread, allowing you to take advantage of ApartmentState and ThreadPriority settings in the config file.
         /// </summary>
-        public bool TestInNewThread
-        {
-            get { return _testInNewThread.HasValue ? _testInNewThread.Value : true; }
-            set { _testInNewThread = value; }
-        }
+        public bool TestInNewThread { get; set; }
 
-
-        private bool _force32Bit;
 
         /// <summary>
         /// Determines whether the tests are run in a 32bit process on a 64bit OS.
         /// </summary>
-        public bool Force32Bit
-        {
-            get { return _force32Bit; }
-            set { _force32Bit = value; }
-        }
+        public bool Force32Bit { get; set; }
 
-        #endregion
 
-        #region Task Overrides
         /// <summary>
         /// Returns a string value containing the command line arguments to pass directly to the executable file.
         /// </summary>
@@ -239,25 +152,27 @@ namespace MSBuild.Tasks
             {
                 builder.AppendSwitch("/noshadow");
             }
-            if (_testInNewThread.HasValue && !_testInNewThread.Value)
+            if (TestInNewThread)
             {
                 builder.AppendSwitch("/nothread");
             }
-            builder.AppendFileNamesIfNotNull(_assemblies, " ");
+            builder.AppendFileNamesIfNotNull(Assemblies, " ");
 
-            builder.AppendSwitchIfNotNull("/config=", _projectConfiguration);
+            builder.AppendSwitchIfNotNull("/config=", ProjectConfiguration);
 
-            builder.AppendSwitchIfNotNull("/fixture=", _fixture);
+            builder.AppendSwitchIfNotNull("/fixture=", Fixture);
 
-            builder.AppendSwitchIfNotNull("/include=", _includeCategory);
+            builder.AppendSwitchIfNotNull("/include=", IncludeCategory);
 
-            builder.AppendSwitchIfNotNull("/exclude=", _excludeCategory);
+            builder.AppendSwitchIfNotNull("/exclude=", ExcludeCategory);
 
-            builder.AppendSwitchIfNotNull("/transform=", _xsltTransformFile);
+            builder.AppendSwitchIfNotNull("/transform=", XsltTransformFile);
 
-            builder.AppendSwitchIfNotNull("/xml=", _outputXmlFile);
+            builder.AppendSwitchIfNotNull("/xml=", OutputXmlFile);
 
-            builder.AppendSwitchIfNotNull("/err=", _errorOutputFile);
+            builder.AppendSwitchIfNotNull("/err=", ErrorOutputFile);
+
+            builder.AppendSwitchIfNotNull("/framework=", FrameworkToUse);
 
             return builder.ToString();
         }
@@ -265,25 +180,11 @@ namespace MSBuild.Tasks
         private void CheckToolPath()
         {
             string nunitPath = ToolPath == null ? String.Empty : ToolPath.Trim();
-            if (!String.IsNullOrEmpty(nunitPath))
+            if (String.IsNullOrEmpty(nunitPath))
             {
-                ToolPath = nunitPath;
-                return;
+                nunitPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
             }
 
-            nunitPath = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            nunitPath = Path.Combine(nunitPath, DEFAULT_NUNIT_DIRECTORY);
-
-            try
-            {
-                string value = Registry.GetValue(InstallDirKey, "InstallDir", nunitPath) as string;
-                if (!string.IsNullOrEmpty(value))
-                    nunitPath = Path.Combine(value, "bin");
-            }
-            catch (Exception ex)
-            {
-                Log.LogErrorFromException(ex);
-            }
             ToolPath = nunitPath;
 
         }
@@ -318,7 +219,7 @@ namespace MSBuild.Tasks
         {
             get
             {
-                if (_force32Bit)
+                if (Force32Bit)
                     return @"nunit-console-x86.exe";
                 else
                     return @"nunit-console.exe";
@@ -346,10 +247,8 @@ namespace MSBuild.Tasks
         /// </returns>
         protected override string GetWorkingDirectory()
         {
-            return string.IsNullOrEmpty(_workingDirectory) ? base.GetWorkingDirectory() : _workingDirectory;
+            return string.IsNullOrEmpty(WorkingDirectory) ? base.GetWorkingDirectory() : WorkingDirectory;
         }
-
-        #endregion Task Overrides
 
     }
 }

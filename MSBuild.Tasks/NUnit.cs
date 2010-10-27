@@ -35,6 +35,16 @@ using Microsoft.Win32;
 namespace MSBuild.Tasks
 {
 
+    public enum ProcessModelValues
+    {
+        Default, Single, Separate, Multiple
+    }
+
+    public enum AppDomainUsageValues
+    {
+        Default, None, Single, Multiple
+    }
+
     /// <summary>
     /// Run NUnit on a group of assemblies.
     /// </summary>
@@ -77,10 +87,10 @@ namespace MSBuild.Tasks
         public string ExcludeCategory { get; set; }
 
         /// <summary>
-        /// Gets or sets the fixture.
+        /// test case, fixture or namespace to run.
         /// </summary>
-        /// <value>The fixture.</value>
-        public string Fixture { get; set; }
+        /// <value>Name of the test case, fixture or namespace to run.</value>
+        public string WhatToRun { get; set; }
 
         /// <summary>
         /// Gets or sets the framework version to use.
@@ -138,6 +148,21 @@ namespace MSBuild.Tasks
         /// </summary>
         public bool Force32Bit { get; set; }
 
+        /// <summary>
+        /// Determines whether to label each test in stdOut.
+        /// </summary>
+        public bool ShowLabels { get; set; }
+
+        public ProcessModelValues processModel;
+
+        public AppDomainUsageValues appDomainUsage;
+
+        public string ProcessModel { get { return processModel.ToString(); } set { processModel = (ProcessModelValues)Enum.Parse(typeof(ProcessModelValues), value, true); } }
+        public string AppDomainUsage { get { return appDomainUsage.ToString(); } set { appDomainUsage = (AppDomainUsageValues)Enum.Parse(typeof(AppDomainUsageValues), value, true); } }
+
+        public bool HideDots { get; set; }
+
+        public int TestCaseTimeoutInMilliseconds { get; set; }
 
         /// <summary>
         /// Returns a string value containing the command line arguments to pass directly to the executable file.
@@ -153,6 +178,14 @@ namespace MSBuild.Tasks
             {
                 builder.AppendSwitch("/noshadow");
             }
+            if (HideDots)
+            {
+                builder.AppendSwitch("/nodots");
+            }
+            if (ShowLabels)
+            {
+                builder.AppendSwitch("/labels");
+            }
             if (!TestInNewThread)
             {
                 builder.AppendSwitch("/nothread");
@@ -161,7 +194,7 @@ namespace MSBuild.Tasks
 
             builder.AppendSwitchIfNotNull("/config=", ProjectConfiguration);
 
-            builder.AppendSwitchIfNotNull("/fixture=", Fixture);
+            builder.AppendSwitchIfNotNull("/run=", WhatToRun);
 
             builder.AppendSwitchIfNotNull("/include=", IncludeCategory);
 
@@ -175,6 +208,17 @@ namespace MSBuild.Tasks
 
             builder.AppendSwitchIfNotNull("/framework=", FrameworkToUse);
 
+            if (processModel != ProcessModelValues.Default)
+                builder.AppendSwitchIfNotNull("/process=", processModel.ToString());
+
+            if (appDomainUsage != AppDomainUsageValues.Default)
+                builder.AppendSwitchIfNotNull("/domain=", appDomainUsage.ToString());
+
+            if (TestCaseTimeoutInMilliseconds != 0)
+                builder.AppendSwitchIfNotNull("/timeout=", TestCaseTimeoutInMilliseconds.ToString());
+
+            builder.AppendSwitchIfNotNull("/xml=", OutputXmlFile);
+            
             return builder.ToString();
         }
 

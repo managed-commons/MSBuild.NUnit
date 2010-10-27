@@ -57,7 +57,11 @@
     -->
   <UsingTask AssemblyFile="..\bin\$(Configuration)\MSBuild.NUnit.dll" TaskName="MSBuild.Tasks.NUnit" />
   <Target Name="RunUnitTest">
-    <NUnit Assemblies="$(ProjectName).csproj" ToolPath="C:\Program Files (x86)\NUnit 2.5.5\bin\net-2.0\" DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-2.0" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" />
+    <NUnit Assemblies="$(ProjectName).csproj" ToolPath="C:\Program Files (x86)\NUnit 2.5.5\bin\net-2.0\" 
+           DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-2.0" 
+           WorkingDirectory="$(ProjectDir)" ContinueOnError="false"
+           ProcessModel="Single" HideDots="true"
+           />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="RunUnitTest">
   </Target>

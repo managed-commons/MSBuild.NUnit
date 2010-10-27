@@ -1,5 +1,6 @@
 ﻿/*
 Copyright © 2005 Paul Welter. All rights reserved.
+Copyright © 2010 MSBuild NUnit Task Project. All rights reserved.
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions
@@ -35,7 +36,7 @@ namespace MSBuild.Tasks
 {
 
     /// <summary>
-    /// Run NUnit 2.4 on a group of assemblies.
+    /// Run NUnit on a group of assemblies.
     /// </summary>
     /// <example>Run NUnit tests.
     /// <code><![CDATA[
@@ -152,7 +153,7 @@ namespace MSBuild.Tasks
             {
                 builder.AppendSwitch("/noshadow");
             }
-            if (TestInNewThread)
+            if (!TestInNewThread)
             {
                 builder.AppendSwitch("/nothread");
             }
@@ -183,10 +184,12 @@ namespace MSBuild.Tasks
             if (String.IsNullOrEmpty(nunitPath))
             {
                 nunitPath = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().CodeBase);
+                nunitPath = nunitPath.Replace(@"file:\", string.Empty);
             }
 
+            if (!Directory.Exists(nunitPath))
+                Log.LogError("Could not find directory '{0}'", nunitPath);
             ToolPath = nunitPath;
-
         }
 
         /// <summary>
@@ -207,7 +210,7 @@ namespace MSBuild.Tasks
         /// <param name="message">A descriptive message to provide loggers, usually the command line and switches.</param>
         protected override void LogToolCommand(string message)
         {
-            Log.LogCommandLine(MessageImportance.Low, message);
+            Log.LogCommandLine(MessageImportance.Normal, message);
         }
 
         /// <summary>
@@ -235,7 +238,7 @@ namespace MSBuild.Tasks
         {
             get
             {
-                return MessageImportance.Normal;
+                return MessageImportance.High;
             }
         }
 

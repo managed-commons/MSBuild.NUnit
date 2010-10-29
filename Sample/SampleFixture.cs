@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 
 using NUnit.Framework;
 
@@ -13,7 +14,7 @@ namespace Sample
         <Target Name="RunUnitTest">
             <NUnit Assemblies="$(ProjectName).csproj" 
                    ToolPath="C:\Program Files (x86)\NUnit 2.5.5\bin\net-2.0\"
-                   DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-2.0" 
+                   DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-3.5" 
                    WorkingDirectory="$(ProjectDir)" ContinueOnError="false" />
         </Target>
         <Target Name="AfterBuild" DependsOnTargets="RunUnitTest">
@@ -36,5 +37,88 @@ namespace Sample
         {
             Assert.Pass("Just OK, for testing the NUnit Task from the MSBuild NUnit Tas Project");
         }
+
+
+        private class MyClass
+        {
+            public int Id { get; set; }
+
+        }
+
+        private int count;
+
+        private IEnumerable<MyClass> GetYieldResult(int qtResult)
+        {
+            for (int i = 0; i < qtResult; i++)
+            {
+                count++;
+                yield return new MyClass() { Id = i + 1 };
+            }
+        }
+
+        private IEnumerable<MyClass> GetNonYieldResult(int qtResult)
+        {
+            var result = new List<MyClass>();
+
+            for (int i = 0; i < qtResult; i++)
+            {
+                count++;
+                result.Add(new MyClass() { Id = i + 1 });
+            }
+
+            return result;
+        }
+
+        [Test]
+        public void Test1()
+        {
+            count = 0;
+
+            IEnumerable<MyClass> yieldResult = GetYieldResult(1);
+
+            var firstGet = yieldResult.First();
+            var secondGet = yieldResult.First();
+
+            Assert.AreEqual(1, firstGet.Id);
+            Assert.AreEqual(1, secondGet.Id);
+
+            Assert.AreEqual(2, count);//calling "First()" 2 times, yieldResult is created 2 times
+            Assert.AreNotSame(firstGet, secondGet);//and created different instances of each list item
+        }
+
+        [Test]
+        public void Test2()
+        {
+            count = 0;
+
+            IEnumerable<MyClass> yieldResult = GetNonYieldResult(1);
+
+            var firstGet = yieldResult.First();
+            var secondGet = yieldResult.First();
+
+            Assert.AreEqual(1, firstGet.Id);
+            Assert.AreEqual(1, secondGet.Id);
+
+            Assert.AreEqual(1, count);//as expected, it creates only 1 result set
+            Assert.AreSame(firstGet, secondGet);//and calling "First()" several times will always return same instance of MyClass
+        }
+
+        [Test]
+        public void Test3()
+        {
+            count = 0;
+
+            ICachedEnumerable<MyClass> yieldResult = GetYieldResult(1).AsCachedEnumerable();
+
+            var firstGet = yieldResult.First();
+            var secondGet = yieldResult.First();
+
+            Assert.AreEqual(1, firstGet.Id);
+            Assert.AreEqual(1, secondGet.Id);
+
+            Assert.AreEqual(1, count);//calling "First()" 2 times, yieldResult is created 2 times
+            Assert.AreSame(firstGet, secondGet);//and created different instances of each list item
+        }
+
     }
 }

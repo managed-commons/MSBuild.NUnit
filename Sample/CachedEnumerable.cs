@@ -64,12 +64,12 @@ namespace Sample
             return new CachedEnumerator<T>(this);
         }
 
-        private class CachedEnumerator<T> : IEnumerator<T>, System.Collections.IEnumerator
+        private class CachedEnumerator<E> : IEnumerator<E>, System.Collections.IEnumerator
         {
-            private readonly CachedEnumerable<T> parent;
+            private readonly CachedEnumerable<E> parent;
             private int where;
 
-            public CachedEnumerator(CachedEnumerable<T> parent)
+            public CachedEnumerator(CachedEnumerable<E> parent)
             {
                 this.parent = parent;
                 Reset();
@@ -95,12 +95,12 @@ namespace Sample
                 where = -1;
             }
 
-            T IEnumerator<T>.Current
+            E IEnumerator<E>.Current
             {
                 get { return Get(); }
             }
 
-            private T Get()
+            private E Get()
             {
                 return parent.Get(where);
             }

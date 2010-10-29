@@ -164,6 +164,10 @@ namespace MSBuild.Tasks
 
         public int TestCaseTimeoutInMilliseconds { get; set; }
 
+
+        // Support /output=STR             File to receive test output (Short format: /out=STR)
+
+
         /// <summary>
         /// Returns a string value containing the command line arguments to pass directly to the executable file.
         /// </summary>
@@ -217,8 +221,6 @@ namespace MSBuild.Tasks
             if (TestCaseTimeoutInMilliseconds != 0)
                 builder.AppendSwitchIfNotNull("/timeout=", TestCaseTimeoutInMilliseconds.ToString());
 
-            builder.AppendSwitchIfNotNull("/xml=", OutputXmlFile);
-            
             return builder.ToString();
         }
 

@@ -278,11 +278,18 @@ namespace MSBuild.Tasks
 		protected override string ToolName {
 			get {
 				if (Force32Bit)
-					return @"nunit-console-x86";
+					return ToolFullName(@"nunit-console-x86");
 				else
-					return @"nunit-console";
+					return ToolFullName(@"nunit-console");
 			}
 		}
+
+        private string ToolFullName(string toolname)
+        {
+            if (IsLinuxOrMac)
+                return toolname;
+            return toolname + ".exe";
+        }
 
 		/// <summary>
 		/// Gets the <see cref="T:Microsoft.Build.Framework.MessageImportance"></see> with which to log errors.

@@ -1,8 +1,8 @@
-** MSBuild.NUnit **
+# MSBuild.NUnit
 
 A fork of the MSBuild Community Tasks Project (http://msbuildtasks.tigris.org/) NUnit Task targetting mainly the MSBuild 2.0 (2005) but using newer versions of NUnit.
 
-License: BSD
+## License: BSD
 
 Copyright &copy; 2010 MSBuild NUnit Task Project. All rights reserved.
 

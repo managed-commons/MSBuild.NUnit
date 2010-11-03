@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package>
+    <metadata>
+        <id>MSBuild.NUnit</id>
+        <version>1.0.0.0</version>
+        <authors>
+            <author>MSBuild NUnit Task Project</author>
+            <author>Paul Welter</author>
+        </authors>
+        <description>MSBuild.NUnit is a MSBuild task to integrate the NUnit testing framework, to support Test Driven Development </description>
+        <language>en-US</language>
+    </metadata>
+    <dependencies>
+        <dependency id="NUnit" minversion="2.5.8.10295" />
+    </dependencies>
+</package>

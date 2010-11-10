@@ -12,14 +12,6 @@
  		<licenseUrl>https://github.com/monoman/MSBuild.NUnit/blob/master/README.markdown</licenseUrl>
 		<projectUrl>https://github.com/monoman/MSBuild.NUnit</projectUrl>
        <language>en-US</language>
-		<dependencies>
-			<dependency id="NUnit" minVersion="2.5.8.10295" />
-		</dependencies>
     </metadata>
-	<files>
-		  <file src="bin\Debug\*.dll" target="Tools\MSBuild.Nunit" /> 
-		  <file src="bin\Debug\*.pdb" target="Tools\MSBuild.Nunit" /> 
-		  <file src="NUnit\bin\net-2.0\**\*.*" target="Tools\MSBuild.Nunit" />
-	</files>
 </package>
 

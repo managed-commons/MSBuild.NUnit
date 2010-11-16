@@ -45,7 +45,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MSBuild.NUnit.nuspec" />
+    <None Include="NuGet\MSBuild.NUnit.nuspec" />
     <None Include="README.markdown">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

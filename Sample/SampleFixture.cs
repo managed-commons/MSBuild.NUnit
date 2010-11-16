@@ -4,6 +4,7 @@ using System.Text;
 using System.Linq;
 
 using NUnit.Framework;
+using System.Globalization;
 
 namespace Sample
 {
@@ -37,6 +38,19 @@ namespace Sample
         {
             Assert.Pass("Just OK, for testing the NUnit Task from the MSBuild NUnit Tas Project");
         }
+
+
+        [Test]
+        public void TestNumberParsing()
+        {
+            var formatter = CultureInfo.GetCultureInfo("en-US").NumberFormat;
+            string longText = "4.9406564584124654E-308";
+            double dvalue0 = Convert.ToDouble(longText, formatter);
+            Assert.AreEqual(4.9406564584124654E-308d, dvalue0);
+            string text = "4.9E-308";
+            double dvalue1 = Convert.ToDouble(text, formatter);
+            Assert.AreEqual(4.9E-308d, dvalue1);
+         }
 
 
         private class MyClass

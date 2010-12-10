@@ -4,9 +4,6 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MSBuild.NUnit", "MSBuild.NUnit.csproj", "{B7437DB9-969C-4A02-B12F-C05CFA57D80D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample", "Sample\Sample.csproj", "{7EB352C1-7CA6-46B1-8B53-EB30B32538EC}"
-	ProjectSection(ProjectDependencies) = postProject
-		{B7437DB9-969C-4A02-B12F-C05CFA57D80D} = {B7437DB9-969C-4A02-B12F-C05CFA57D80D}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

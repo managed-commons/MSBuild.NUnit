@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<package xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+    <metadata>
+        <id>MSBuild.NUnit</id>
+        <version>1.0.0.1</version>
+		<title>MSBuild NUnit Task</title>
+        <description>MSBuild.NUnit is a MSBuild task to integrate the NUnit testing framework, to support Test Driven Development.</description>
+        <summary>
+            You can add a post build block on your msbuild (.xxproj) file to run tests on each build, even inside the IDE!
+            See the snippet ToAddToYour.xxproj.txt in this package.
+        </summary>
+        <authors>MSBuild NUnit Task Project, Paul Welter</authors>
+ 		<licenseUrl>https://github.com/monoman/MSBuild.NUnit/blob/master/README.markdown</licenseUrl>
+		<projectUrl>https://github.com/monoman/MSBuild.NUnit</projectUrl>
+		<language>en-US</language>
+    </metadata>
+    <files>
+        <file src="ToAddToYour.xxproj.txt" target="." />
+        <file src="NUnit\bin\net-2.0\framework\*.*" target="lib" />
+        <file src="NUnit\bin\net-2.0\*.*" target="tools" />
+        <file src="NUnit\bin\net-2.0\lib\*.*" target="tools\lib" />
+		<file src="bin\Debug\MSBuild.NUnit.dll" target="tools" />
+    </files>
+</package>
+

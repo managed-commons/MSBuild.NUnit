@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -32,14 +32,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="nunit.framework, Version=2.5.8.10295, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\MSBuild.NUnit.1.0.0.1\lib\nunit.framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Core" />
-    <Reference Include="nunit.framework, Version=2.5.5.10112, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\NUnit\bin\net-2.0\framework\nunit.framework.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CachedEnumerable.cs" />
@@ -49,18 +49,13 @@
   <ItemGroup>
     <Content Include="README.txt" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-         Other similar extension points exist, see Microsoft.Common.targets.
-    <Target Name="BeforeBuild">
-    </Target>
-    <Target Name="AfterBuild">
-    </Target>
-    -->
-  <UsingTask AssemblyFile="..\bin\$(Configuration)\MSBuild.NUnit.dll" TaskName="MSBuild.Tasks.NUnit" />
+  <UsingTask AssemblyFile="..\packages\MSBuild.NUnit.1.0.0.1\tools\MSBuild.NUnit.dll" TaskName="MSBuild.Tasks.NUnit" />
   <Target Name="RunUnitTest">
-    <NUnit Assemblies="$(ProjectName).csproj" ToolPath="..\NUnit\bin\net-2.0\" DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-3.5" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" ProcessModel="Single" HideDots="true" />
+    <NUnit Assemblies="$(ProjectName).csproj" ToolPath="..\packages\MSBuild.NUnit.1.0.0.1\tools" DisableShadowCopy="true" Force32Bit="false" ProjectConfiguration="$(Configuration)" FrameworkToUse="net-3.5" WorkingDirectory="$(ProjectDir)" ContinueOnError="false" ProcessModel="Single" HideDots="true" />
   </Target>
   <Target Name="AfterBuild" DependsOnTargets="RunUnitTest">
   </Target>
